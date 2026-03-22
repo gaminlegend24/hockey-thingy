@@ -1,2 +1,0 @@
-# hockey-thingy
-thingy
