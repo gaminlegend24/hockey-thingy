@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext'
 import './Login.css'
 
 function Login() {
-  const { signInWithGoogle } = useAuth()
+  const { signInWithGoogle, signInAnonymously } = useAuth()
   const [signingIn, setSigningIn] = useState(false)
   const [error, setError] = useState(null)
 
@@ -11,6 +11,16 @@ function Login() {
     setSigningIn(true)
     setError(null)
     const result = await signInWithGoogle()
+    if (result?.error) {
+      setError(result.error)
+      setSigningIn(false)
+    }
+  }
+
+  const handleGuest = async () => {
+    setSigningIn(true)
+    setError(null)
+    const result = await signInAnonymously()
     if (result?.error) {
       setError(result.error)
       setSigningIn(false)
@@ -29,6 +39,13 @@ function Login() {
           disabled={signingIn}
         >
           {signingIn ? 'Redirecting...' : 'Sign in with Google'}
+        </button>
+        <button
+          className="login-btn login-btn-guest"
+          onClick={handleGuest}
+          disabled={signingIn}
+        >
+          Continue as Guest
         </button>
       </div>
     </div>

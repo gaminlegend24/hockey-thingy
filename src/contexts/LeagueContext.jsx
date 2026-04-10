@@ -5,7 +5,7 @@ import { useAuth } from './AuthContext'
 const LeagueContext = createContext()
 
 export function LeagueProvider({ children }) {
-  const { user } = useAuth()
+  const { user, isGuest } = useAuth()
   const [leagues, setLeagues] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -16,9 +16,16 @@ export function LeagueProvider({ children }) {
       return
     }
 
+    // Guests don't have league memberships
+    if (isGuest) {
+      setLeagues([])
+      setLoading(false)
+      return
+    }
+
     const { data, error } = await supabase
       .from('league_members')
-      .select('league_id, role, leagues(id, name, owner_id, created_at)')
+      .select('league_id, role, leagues(id, name, owner_id, created_at, public)')
       .eq('user_id', user.id)
 
     if (error) {
@@ -34,8 +41,34 @@ export function LeagueProvider({ children }) {
     fetchLeagues()
   }, [user])
 
+  const fetchLeagueById = async (leagueId) => {
+    if (!supabase) return { error: 'Not configured', league: null }
+
+    const { data, error } = await supabase
+      .from('leagues')
+      .select('*')
+      .eq('id', leagueId)
+      .single()
+
+    if (error) return { error: error.message, league: null }
+    return { error: null, league: data }
+  }
+
+  const toggleLeaguePublic = async (leagueId, isPublic) => {
+    if (!supabase || isGuest) return { error: 'Not authorized' }
+
+    const { error } = await supabase
+      .from('leagues')
+      .update({ public: isPublic })
+      .eq('id', leagueId)
+
+    if (error) return { error: error.message }
+    await fetchLeagues()
+    return { error: null }
+  }
+
   const createLeague = async (name) => {
-    if (!supabase || !user) return { error: 'Not authenticated' }
+    if (!supabase || !user || isGuest) return { error: 'Not authenticated' }
 
     const { data: league, error: leagueError } = await supabase
       .from('leagues')
@@ -62,7 +95,7 @@ export function LeagueProvider({ children }) {
   }
 
   const deleteLeague = async (leagueId) => {
-    if (!supabase) return { error: 'Not configured' }
+    if (!supabase || isGuest) return { error: 'Not authorized' }
 
     const { error } = await supabase
       .from('leagues')
@@ -79,7 +112,7 @@ export function LeagueProvider({ children }) {
   }
 
   return (
-    <LeagueContext.Provider value={{ leagues, loading, createLeague, deleteLeague, refreshLeagues: fetchLeagues }}>
+    <LeagueContext.Provider value={{ leagues, loading, createLeague, deleteLeague, fetchLeagueById, toggleLeaguePublic, refreshLeagues: fetchLeagues }}>
       {children}
     </LeagueContext.Provider>
   )

@@ -6,6 +6,7 @@ const AuthContext = createContext()
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [isGuest, setIsGuest] = useState(false)
 
   useEffect(() => {
     if (!supabase) {
@@ -13,16 +14,21 @@ export function AuthProvider({ children }) {
       return
     }
 
+    const handleSession = (session) => {
+      const u = session?.user ?? null
+      setUser(u)
+      setIsGuest(u?.is_anonymous === true)
+      setLoading(false)
+    }
+
     // Listen for auth changes first (catches OAuth callback tokens)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
+      handleSession(session)
     })
 
     // Also check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
+      handleSession(session)
     }).catch(() => {
       setLoading(false)
     })
@@ -50,13 +56,25 @@ export function AuthProvider({ children }) {
     return { error: null }
   }
 
+  const signInAnonymously = async () => {
+    if (!supabase) {
+      return { error: 'Supabase is not configured.' }
+    }
+    const { error } = await supabase.auth.signInAnonymously()
+    if (error) {
+      console.error('Anonymous sign in error:', error.message)
+      return { error: error.message }
+    }
+    return { error: null }
+  }
+
   const signOut = () => {
     if (!supabase) return
     return supabase.auth.signOut()
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, loading, isGuest, signInWithGoogle, signInAnonymously, signOut }}>
       {children}
     </AuthContext.Provider>
   )

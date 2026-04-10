@@ -1,15 +1,36 @@
-import { NavLink, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { NavLink, useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLeagues } from '../contexts/LeagueContext'
 import './Sidebar.css'
 
 function Sidebar() {
-  const { user, signOut } = useAuth()
-  const { leagues } = useLeagues()
+  const { user, isGuest, signOut } = useAuth()
+  const { leagues, fetchLeagueById } = useLeagues()
   const { leagueId } = useParams()
+  const navigate = useNavigate()
+  const [currentLeague, setCurrentLeague] = useState(null)
 
-  const currentLeague = leagues.find(l => l.id === leagueId)
+  useEffect(() => {
+    // Try to find league in local list first
+    const found = leagues.find(l => l.id === leagueId)
+    if (found) {
+      setCurrentLeague(found)
+    } else if (leagueId) {
+      // Guest or league not in list — fetch directly
+      fetchLeagueById(leagueId).then(({ league }) => {
+        if (league) setCurrentLeague(league)
+      })
+    }
+  }, [leagueId, leagues])
+
   const base = `/league/${leagueId}`
+
+  const handleAuthAction = () => {
+    signOut().then(() => {
+      navigate('/')
+    })
+  }
 
   return (
     <aside className="sidebar">
@@ -25,17 +46,28 @@ function Sidebar() {
         <NavLink to={`${base}/stats`}>Stats</NavLink>
       </nav>
       <div className="sidebar-user">
-        <img
-          className="sidebar-avatar"
-          src={user?.user_metadata?.avatar_url}
-          alt=""
-        />
-        <span className="sidebar-username">
-          {user?.user_metadata?.full_name || user?.email}
-        </span>
-        <button className="sidebar-signout" onClick={signOut}>
-          Sign out
-        </button>
+        {isGuest ? (
+          <>
+            <span className="sidebar-username">Guest</span>
+            <button className="sidebar-signout" onClick={handleAuthAction}>
+              Sign in
+            </button>
+          </>
+        ) : (
+          <>
+            <img
+              className="sidebar-avatar"
+              src={user?.user_metadata?.avatar_url}
+              alt=""
+            />
+            <span className="sidebar-username">
+              {user?.user_metadata?.full_name || user?.email}
+            </span>
+            <button className="sidebar-signout" onClick={handleAuthAction}>
+              Sign out
+            </button>
+          </>
+        )}
       </div>
     </aside>
   )
