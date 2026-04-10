@@ -5,6 +5,27 @@ import { useAuth } from './AuthContext'
 
 const TeamsContext = createContext()
 
+function getLogoPath(logoUrl) {
+  if (!logoUrl) return null
+  // Extract the storage path from the public URL
+  // URL format: .../storage/v1/object/public/team-logos/{path}
+  const marker = '/team-logos/'
+  const idx = logoUrl.indexOf(marker)
+  if (idx === -1) return null
+  return logoUrl.slice(idx + marker.length)
+}
+
+async function uploadLogoFile(file, leagueId) {
+  const ext = file.name.split('.').pop()
+  const path = `${leagueId}/${Date.now()}.${ext}`
+  const { error } = await supabase.storage
+    .from('team-logos')
+    .upload(path, file, { upsert: false })
+  if (error) return { error: error.message, url: null }
+  const { data } = supabase.storage.from('team-logos').getPublicUrl(path)
+  return { error: null, url: data.publicUrl }
+}
+
 export function TeamsProvider({ children }) {
   const { leagueId } = useParams()
   const { user, isGuest } = useAuth()
@@ -38,12 +59,19 @@ export function TeamsProvider({ children }) {
     fetchTeams()
   }, [leagueId])
 
-  const createTeam = async (name) => {
+  const createTeam = async (name, logoFile) => {
     if (!supabase || !user || isGuest) return { error: 'Not authenticated' }
+
+    let logo_url = null
+    if (logoFile) {
+      const { error: uploadError, url } = await uploadLogoFile(logoFile, leagueId)
+      if (uploadError) return { error: uploadError }
+      logo_url = url
+    }
 
     const { data, error } = await supabase
       .from('teams')
-      .insert({ league_id: leagueId, name })
+      .insert({ league_id: leagueId, name, logo_url })
       .select()
       .single()
 
@@ -59,6 +87,8 @@ export function TeamsProvider({ children }) {
   const deleteTeam = async (teamId) => {
     if (!supabase || isGuest) return { error: 'Not authorized' }
 
+    const team = teams.find(t => t.id === teamId)
+
     const { error } = await supabase
       .from('teams')
       .delete()
@@ -69,12 +99,50 @@ export function TeamsProvider({ children }) {
       return { error: error.message }
     }
 
+    // Clean up logo from storage
+    if (team?.logo_url) {
+      const path = getLogoPath(team.logo_url)
+      if (path) {
+        await supabase.storage.from('team-logos').remove([path])
+      }
+    }
+
+    await fetchTeams()
+    return { error: null }
+  }
+
+  const uploadLogo = async (teamId, file) => {
+    if (!supabase || !user || isGuest) return { error: 'Not authenticated' }
+
+    const team = teams.find(t => t.id === teamId)
+
+    const { error: uploadError, url } = await uploadLogoFile(file, leagueId)
+    if (uploadError) return { error: uploadError }
+
+    const { error } = await supabase
+      .from('teams')
+      .update({ logo_url: url })
+      .eq('id', teamId)
+
+    if (error) {
+      console.error('Error updating team logo:', error.message)
+      return { error: error.message }
+    }
+
+    // Clean up old logo
+    if (team?.logo_url) {
+      const oldPath = getLogoPath(team.logo_url)
+      if (oldPath) {
+        await supabase.storage.from('team-logos').remove([oldPath])
+      }
+    }
+
     await fetchTeams()
     return { error: null }
   }
 
   return (
-    <TeamsContext.Provider value={{ teams, loading, createTeam, deleteTeam }}>
+    <TeamsContext.Provider value={{ teams, loading, createTeam, deleteTeam, uploadLogo }}>
       {children}
     </TeamsContext.Provider>
   )
