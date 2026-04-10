@@ -25,3 +25,12 @@ button {
   cursor: pointer;
   font-family: inherit;
 }
+
+.loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 16px;
+}
