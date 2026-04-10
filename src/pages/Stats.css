@@ -1,5 +1,32 @@
 .stats h1 {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+}
+
+.stats-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.stats-toggle-btn {
+  background-color: #1a1a1a;
+  color: #888;
+  border: 1px solid #333;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.stats-toggle-btn:hover {
+  color: #eee;
+}
+
+.stats-toggle-btn.active {
+  background-color: #fff;
+  color: #111;
+  border-color: #fff;
 }
 
 .stats-table-wrapper {
