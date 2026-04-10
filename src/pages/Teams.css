@@ -1,0 +1,29 @@
+.teams-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.btn-primary {
+  background-color: #e94560;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #d63851;
+}
+
+.empty-state {
+  background-color: #16213e;
+  border-radius: 8px;
+  padding: 48px;
+  text-align: center;
+  color: #888;
+}
