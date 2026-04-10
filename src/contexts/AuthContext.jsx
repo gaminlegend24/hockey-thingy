@@ -26,14 +26,23 @@ export function AuthProvider({ children }) {
   }, [])
 
   const signInWithGoogle = async () => {
-    if (!supabase) return
-    const { error } = await supabase.auth.signInWithOAuth({
+    if (!supabase) {
+      return { error: 'Supabase is not configured. Check your environment variables.' }
+    }
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: window.location.origin + '/hockey-thingy/',
       },
     })
-    if (error) console.error('Sign in error:', error.message)
+    if (error) {
+      console.error('Sign in error:', error.message)
+      return { error: error.message }
+    }
+    if (data?.url) {
+      window.location.href = data.url
+    }
+    return { error: null }
   }
 
   const signOut = () => {
