@@ -54,6 +54,8 @@ function Stats() {
                 <th>GP</th>
                 <th>W</th>
                 <th>L</th>
+                <th>SA</th>
+                <th>SV</th>
                 <th>GAA</th>
                 <th>SV%</th>
                 <th>TOI</th>
@@ -62,7 +64,7 @@ function Stats() {
             </thead>
             <tbody>
               <tr>
-                <td colSpan="8" className="stats-empty">No data available</td>
+                <td colSpan="10" className="stats-empty">No data available</td>
               </tr>
             </tbody>
           </table>
