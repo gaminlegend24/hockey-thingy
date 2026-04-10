@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
+import { TeamsProvider } from '../contexts/TeamsContext'
 import './Layout.css'
 
 function Layout() {
@@ -7,7 +8,9 @@ function Layout() {
     <div className="layout">
       <Sidebar />
       <main className="content">
-        <Outlet />
+        <TeamsProvider>
+          <Outlet />
+        </TeamsProvider>
       </main>
     </div>
   )
