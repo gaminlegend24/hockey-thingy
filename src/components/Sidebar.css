@@ -24,6 +24,18 @@
   padding: 12px 0;
 }
 
+.sidebar-back {
+  font-size: 13px;
+  padding: 10px 20px;
+  color: #666;
+  border-bottom: 1px solid #333;
+  margin-bottom: 4px;
+}
+
+.sidebar-back:hover {
+  color: #fff;
+}
+
 .sidebar-nav a {
   padding: 12px 20px;
   font-size: 15px;
