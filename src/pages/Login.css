@@ -26,6 +26,12 @@
   margin-bottom: 32px;
 }
 
+.login-error {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
 .login-btn {
   background-color: #fff;
   color: #111;
@@ -35,9 +41,17 @@
   font-size: 15px;
   font-weight: 500;
   width: 100%;
+  position: relative;
+  z-index: 1;
   transition: background-color 0.2s;
 }
 
 .login-btn:hover {
   background-color: #ccc;
+}
+
+.login-btn:disabled {
+  background-color: #666;
+  color: #aaa;
+  cursor: wait;
 }
