@@ -1,7 +1,7 @@
 .sidebar {
   width: 220px;
   min-height: 100vh;
-  background-color: #16213e;
+  background-color: #181818;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -9,13 +9,13 @@
 
 .sidebar-header {
   padding: 24px 20px;
-  border-bottom: 1px solid #1a1a2e;
+  border-bottom: 1px solid #333;
 }
 
 .sidebar-header h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #e94560;
+  color: #fff;
 }
 
 .sidebar-nav {
@@ -32,12 +32,12 @@
 }
 
 .sidebar-nav a:hover {
-  background-color: #1a1a2e;
+  background-color: #222;
   color: #eee;
 }
 
 .sidebar-nav a.active {
-  background-color: #0f3460;
+  background-color: #333;
   color: #fff;
-  border-left: 3px solid #e94560;
+  border-left: 3px solid #fff;
 }
