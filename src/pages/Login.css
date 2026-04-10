@@ -55,3 +55,16 @@
   color: #aaa;
   cursor: wait;
 }
+
+.login-btn-guest {
+  background: none;
+  border: 1px solid #333;
+  color: #888;
+  margin-top: 12px;
+}
+
+.login-btn-guest:hover {
+  color: #fff;
+  border-color: #fff;
+  background: none;
+}

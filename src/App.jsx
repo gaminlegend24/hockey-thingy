@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
 import { LeagueProvider } from './contexts/LeagueContext'
@@ -10,6 +11,14 @@ import Schedule from './pages/Schedule'
 import Standings from './pages/Standings'
 import Stats from './pages/Stats'
 
+function GuestGate() {
+  const { signInAnonymously } = useAuth()
+  useEffect(() => {
+    signInAnonymously()
+  }, [])
+  return <div className="loading">Loading...</div>
+}
+
 function App() {
   const { user, loading } = useAuth()
 
@@ -18,7 +27,12 @@ function App() {
   }
 
   if (!user) {
-    return <Login />
+    return (
+      <Routes>
+        <Route path="league/:leagueId/*" element={<GuestGate />} />
+        <Route path="*" element={<Login />} />
+      </Routes>
+    )
   }
 
   return (

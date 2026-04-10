@@ -4,7 +4,35 @@
 
 .dashboard-subtitle {
   color: #888;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+}
+
+.dashboard-share {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+}
+
+.dashboard-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.dashboard-toggle input {
+  cursor: pointer;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 12px;
 }
 
 .dashboard-cards {
