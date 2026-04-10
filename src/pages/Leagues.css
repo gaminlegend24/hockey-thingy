@@ -57,9 +57,29 @@
   border-color: #fff;
 }
 
+.league-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
 .league-card h3 {
   font-size: 18px;
   margin-bottom: 8px;
+}
+
+.league-delete {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0 4px;
+  transition: color 0.2s;
+}
+
+.league-delete:hover {
+  color: #ff6b6b;
 }
 
 .league-role {
