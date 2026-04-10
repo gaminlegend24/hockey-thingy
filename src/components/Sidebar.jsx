@@ -10,8 +10,8 @@ function Sidebar() {
       <nav className="sidebar-nav">
         <NavLink to="/" end>Dashboard</NavLink>
         <NavLink to="/teams">Teams</NavLink>
-        <NavLink to="/players">Players</NavLink>
-        <NavLink to="/games">Games</NavLink>
+        <NavLink to="/schedule">Schedule</NavLink>
+        <NavLink to="/standings">Standings</NavLink>
         <NavLink to="/stats">Stats</NavLink>
       </nav>
     </aside>
