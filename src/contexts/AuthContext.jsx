@@ -25,14 +25,15 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  const signInWithGoogle = () => {
+  const signInWithGoogle = async () => {
     if (!supabase) return
-    return supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin + window.location.pathname,
+        redirectTo: window.location.origin + '/hockey-thingy/',
       },
     })
+    if (error) console.error('Sign in error:', error.message)
   }
 
   const signOut = () => {
