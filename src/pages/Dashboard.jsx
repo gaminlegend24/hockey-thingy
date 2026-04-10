@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLeagues } from '../contexts/LeagueContext'
+import { useTeams } from '../contexts/TeamsContext'
 import './Dashboard.css'
 
 function Dashboard() {
   const { leagueId } = useParams()
   const { isGuest } = useAuth()
   const { leagues, fetchLeagueById, toggleLeaguePublic } = useLeagues()
+  const { teams } = useTeams()
   const [league, setLeague] = useState(null)
   const [copied, setCopied] = useState(false)
 
@@ -63,7 +65,7 @@ function Dashboard() {
 
       <div className="dashboard-cards">
         <div className="dashboard-card">
-          <span className="dashboard-card-value">0</span>
+          <span className="dashboard-card-value">{teams.length}</span>
           <span className="dashboard-card-label">Teams</span>
         </div>
         <div className="dashboard-card">
