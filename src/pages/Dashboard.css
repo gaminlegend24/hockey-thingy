@@ -15,7 +15,7 @@
 }
 
 .dashboard-card {
-  background-color: #16213e;
+  background-color: #1a1a1a;
   border-radius: 8px;
   padding: 24px;
   display: flex;
@@ -27,7 +27,7 @@
 .dashboard-card-value {
   font-size: 36px;
   font-weight: 700;
-  color: #e94560;
+  color: #fff;
 }
 
 .dashboard-card-label {

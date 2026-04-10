@@ -6,8 +6,8 @@
 }
 
 .btn-primary {
-  background-color: #e94560;
-  color: #fff;
+  background-color: #fff;
+  color: #111;
   border: none;
   padding: 10px 20px;
   border-radius: 6px;
@@ -17,11 +17,11 @@
 }
 
 .btn-primary:hover {
-  background-color: #d63851;
+  background-color: #ccc;
 }
 
 .empty-state {
-  background-color: #16213e;
+  background-color: #1a1a1a;
   border-radius: 8px;
   padding: 48px;
   text-align: center;
