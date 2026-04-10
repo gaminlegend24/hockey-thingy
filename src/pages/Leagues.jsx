@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import './Leagues.css'
 
 function Leagues() {
-  const { leagues, loading, createLeague } = useLeagues()
+  const { leagues, loading, createLeague, deleteLeague } = useLeagues()
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const [showForm, setShowForm] = useState(false)
@@ -26,6 +26,13 @@ function Leagues() {
       setShowForm(false)
     }
     setCreating(false)
+  }
+
+  const handleDelete = async (e, leagueId, leagueName) => {
+    e.stopPropagation()
+    if (!confirm(`Delete "${leagueName}"? This cannot be undone.`)) return
+    const result = await deleteLeague(leagueId)
+    if (result.error) setError(result.error)
   }
 
   if (loading) {
@@ -54,7 +61,18 @@ function Leagues() {
             className="league-card"
             onClick={() => navigate(`/league/${league.id}`)}
           >
-            <h3>{league.name}</h3>
+            <div className="league-card-top">
+              <h3>{league.name}</h3>
+              {league.role === 'owner' && (
+                <button
+                  className="league-delete"
+                  onClick={(e) => handleDelete(e, league.id, league.name)}
+                  title="Delete league"
+                >
+                  &times;
+                </button>
+              )}
+            </div>
             <span className="league-role">{league.role}</span>
           </div>
         ))}
